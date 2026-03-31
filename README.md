@@ -12,22 +12,10 @@ Output example:
     Last Close : $248.80
     Predicted  : $246.29  DOWN 1.01%
 ________________________________________
-📋 Table of Contents
-•	Overview
-•	Features
-•	Installation
-•	Usage
-•	Project Structure
-•	How It Works
-•	Tools & Technologies
-•	AI Assistance
-•	SOLID & DRY Principles
-•	Results
-•	Disclaimer
-
 Overview
 This project builds a complete end-to-end stock price prediction pipeline using deep learning. It automatically downloads historical stock data from Yahoo Finance, engineers 20+ technical indicators as features, trains a stacked LSTM model, evaluates its performance, and outputs a next-day price prediction with direction signal.
 The project was built as a learning exercise in Python, machine learning, and software engineering principles — developed iteratively from scratch through real debugging and hands-on problem solving.
+________________________________________
 
 ✨ Features
 •	Automatic data fetching from Yahoo Finance using yfinance
@@ -39,6 +27,7 @@ The project was built as a learning exercise in Python, machine learning, and so
 •	Next-day price prediction with percentage change and direction signal
 •	Clean, warning-free output with all TensorFlow noise suppressed
 •	Configurable — change ticker, dates, and model settings in one place
+________________________________________
 
 🛠 Installation
 Prerequisites
@@ -51,6 +40,7 @@ Step 2 — Install dependencies
 pip install yfinance pandas numpy scikit-learn tensorflow matplotlib
 Step 3 — Run the predictor
 py -3.11 stock_predictor.py
+________________________________________
 
 📖 Usage
 Change the stock ticker
@@ -71,6 +61,7 @@ After training, the script produces:
 •	Console metrics: MAE, RMSE, MAPE, R²
 •	stock_prediction.png — 4-panel chart saved in the project folder
 •	Next-day price prediction printed to console
+________________________________________
 
 📁 Project Structure
 Stock_Prediction_Application/
@@ -80,6 +71,7 @@ Stock_Prediction_Application/
 ├── Stock_Prediction_Application/               # Python project folder
 ├── Stock_Prediction_Application.sln            # Microsoft Visual Studio solution file
 └── README.md                                   # This file
+________________________________________
 
 ⚙️ How It Works
 1. Data Fetching
@@ -117,6 +109,7 @@ Dense (1) → Predicted Close Price
 •	Learning rate halved when validation loss plateaus
 6. Prediction
 The last 20 days of real data are fed into the trained model to generate the next-day closing price prediction.
+________________________________________
 
 🧰 Tools & Technologies
 Languages & Runtime
@@ -135,44 +128,56 @@ Development Environment
 •	Git & GitHub — version control and repository hosting
 Model
 •	LSTM (Long Short-Term Memory) — a type of recurrent neural network well-suited to sequential time series data, capable of learning long-term dependencies in stock price patterns
+________________________________________
 
 🤖 AI Assistance
 This project was built with the assistance of Claude (Anthropic), an AI assistant, throughout the development process.
-How AI was used
+
+How AI was used:
 •	Code generation — the initial LSTM architecture, feature engineering pipeline, and training loop were generated with Claude as a starting point
 •	Debugging — multiple runtime errors were diagnosed and fixed collaboratively, including ValueError from pandas Series ambiguity, TypeError from float conversion, and data leakage in the scaler setup
 •	Iterative improvement — model hyperparameters (lookback window, LSTM units, dropout, batch size, learning rate) were tuned across multiple runs based on observed metrics
-•	Environment setup — Claude guided the setup process including configuring PATH variables, installing pip packages, and configuring Visual Studio 2022
+•	Environment setup — Claude guided the setup process including configuring PATH variables and installing pip packages
 •	Explaining concepts — concepts like data leakage, MinMaxScaler fitting, LSTM sequence building, and R² interpretation were explained throughout
-What was learnt through the process
+________________________________________
+
+What was learnt through the process:
+
 •	Understanding what each error meant before being able to fix it
 •	Evaluating whether model results were acceptable or needed improvement
 •	Making configuration decisions about dates, architecture, and hyperparameters
 •	Debugging environment issues (PATH variables, Python version conflicts, pip scoping)
+________________________________________
 
-🏗 SOLID & DRY Principles
+🏗 SOLID & DRY Principles:
+
 This project was structured with core software engineering principles in mind, even within a single-file Python script.
+
 DRY — Don't Repeat Yourself
 The DRY principle states that every piece of logic should have a single authoritative definition. Repetition creates maintenance problems — change one instance and forget another and bugs appear.
+
 Applied in this project:
+
 •	CONFIG block at the top — all tunable parameters (TICKER, START_DATE, LOOKBACK, LSTM_UNITS etc.) are defined once. Changing the ticker or date range requires editing one line, not hunting through the code.
 •	FEATURE_COLS list — the list of feature column names is defined once and reused across prepare_data(), predict_next_day(), and add_technical_indicators(). No column name is hardcoded in multiple places.
 •	build_sequences() — the sliding window sequence logic is written once and called from prepare_data(), rather than being duplicated for train and test sets separately.
 •	evaluate() — metric calculation (MAE, RMSE, MAPE, R²) is defined once and reusable for any set of predictions.
-SOLID Principles
+
+SOLID Principles:
 SOLID is a set of five object-oriented design principles that make software easier to maintain and extend:
+
 S — Single Responsibility Principle: Each function or class should have one job and one reason to change.
 Every function in this project has a clearly defined, single responsibility:
-Function	Single Responsibility
-fetch_data()	Download raw data from Yahoo Finance only
-add_technical_indicators()	Engineer features only
-prepare_data()	Scale data and build sequences only
-build_model()	Define model architecture only
-train_model()	Run the training loop only
-evaluate()	Calculate and print metrics only
-plot_results()	Generate visualisations only
-predict_next_day()	Generate the next-day forecast only
-No function does more than one job. If the charting library changes, only plot_results() needs updating. If the data source changes, only fetch_data() needs updating.
+
+Function:	                 Single Responsibility:
+fetch_data()	             Download raw data from Yahoo Finance only
+add_technical_indicators()   Engineer features only
+prepare_data()	             Scale data and build sequences only
+build_model()	             Define model architecture only
+train_model()	             Run the training loop only
+evaluate()	                 Calculate and print metrics only
+plot_results()	             Generate visualisations only
+predict_next_day()	         Generate the next-day forecast only
 
 O — Open/Closed Principle: Software should be open for extension but closed for modification.
 The StockPredictor class accepts parameters at initialisation (ticker, start, end, lookback, test_split), allowing different configurations without modifying the core class logic. You can extend behaviour by subclassing StockPredictor or passing different arguments — the internals stay untouched.
@@ -185,6 +190,7 @@ Each function takes only the inputs it needs. evaluate() only needs y_true and y
 
 D — Dependency Inversion Principle: High-level modules should not depend on low-level modules. Both should depend on abstractions.
 The StockPredictor.run() method orchestrates the pipeline by calling high-level functions (fetch_data, build_model, train_model etc.) without depending on their internal implementations. The model training step does not care whether the data came from Yahoo Finance or a CSV file — it only depends on the prepared numpy arrays passed to it.
+________________________________________
 
 📊 Results
 Performance on AAPL (2024-01-01 to 2026-03-29):
@@ -195,9 +201,11 @@ MAPE	4.88%
 Last Close	$248.80
 Predicted	$246.29
 Difference	$2.51
+
 The model predicted within $2.51 of the actual closing price on its final run — approximately 1% error.
+________________________________________
 
 ⚠️ Disclaimer
-This project is for educational purposes only. Stock prices are inherently unpredictable and no machine learning model should be used to make real financial decisions. Past price patterns do not guarantee future results. Always consult a qualified financial advisor before making investment decisions.
+This project is for academic purposes only.
 
 
