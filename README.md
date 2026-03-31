@@ -205,7 +205,7 @@ Difference	$2.51
 The model predicted within $2.51 of the actual closing price on its final run — approximately 1% error.
 ________________________________________
 
-⚠️ Disclaimer
-This project is for academic purposes only.
-
+📫 Contact Details:
+Author: Tia Reanka Naidoo
+Email: [tiarnaidoo@gmail.com]
 
